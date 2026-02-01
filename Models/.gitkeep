@@ -1,0 +1,5 @@
+# Models folder - Contains data models for the Flow Timer app
+# - TimerState.swift
+# - AmbientSound.swift
+# - FlowSession.swift
+# - TimePeriod.swift

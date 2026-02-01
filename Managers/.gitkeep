@@ -1,0 +1,6 @@
+# Managers folder - Contains business logic managers
+# - TimerManager.swift
+# - AudioManager.swift
+# - FocusManager.swift
+# - SessionStore.swift
+# - PreferencesManager.swift
