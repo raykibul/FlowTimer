@@ -33,6 +33,9 @@ struct FlipClockView: View {
     /// Whether to animate the colons (pulsing effect)
     var animateColons: Bool = true
     
+    /// Optional maximum width constraint — when set, the clock auto-scales to fit
+    var maxWidth: CGFloat? = nil
+    
     // MARK: - Sizing Constants
     
     /// Base digit height before scaling
@@ -52,10 +55,26 @@ struct FlipClockView: View {
     
     // MARK: - Computed Sizing
     
-    private var digitHeight: CGFloat { baseDigitHeight * scale }
-    private var digitWidth: CGFloat { baseDigitWidth * scale }
-    private var fontSize: CGFloat { baseFontSize * scale }
-    private var colonSize: CGFloat { 24 * scale }
+    /// Effective scale that respects the maxWidth constraint
+    private var effectiveScale: CGFloat {
+        guard let maxWidth = maxWidth else { return scale }
+        // Calculate the natural width at the requested scale
+        let digitPairs = showSeconds ? 3 : 2
+        let colonCount = showSeconds ? 2 : 1
+        let naturalWidth = (baseDigitWidth * 2 + digitSpacing) * CGFloat(digitPairs) * scale
+            + pairSpacing * CGFloat(digitPairs - 1) * scale
+            + CGFloat(colonCount) * 24 * 0.4 * scale  // colon dot width approx
+            + 40 * scale  // horizontal padding
+        if naturalWidth > maxWidth {
+            return scale * (maxWidth / naturalWidth)
+        }
+        return scale
+    }
+    
+    private var digitHeight: CGFloat { baseDigitHeight * effectiveScale }
+    private var digitWidth: CGFloat { baseDigitWidth * effectiveScale }
+    private var fontSize: CGFloat { baseFontSize * effectiveScale }
+    private var colonSize: CGFloat { 24 * effectiveScale }
     
     // MARK: - Extracted Digits
     
@@ -67,7 +86,7 @@ struct FlipClockView: View {
     // MARK: - Body
     
     var body: some View {
-        HStack(spacing: pairSpacing * scale) {
+        HStack(spacing: pairSpacing * effectiveScale) {
             // Hours
             digitPair(tens: digits.0, ones: digits.1)
             
@@ -86,8 +105,8 @@ struct FlipClockView: View {
                 digitPair(tens: digits.4, ones: digits.5)
             }
         }
-        .padding(.horizontal, 20 * scale)
-        .padding(.vertical, 16 * scale)
+        .padding(.horizontal, 20 * effectiveScale)
+        .padding(.vertical, 16 * effectiveScale)
         .background(clockBackground)
     }
     
@@ -96,7 +115,7 @@ struct FlipClockView: View {
     /// Creates a pair of flip digits (e.g., hours tens and ones)
     @ViewBuilder
     private func digitPair(tens: Int, ones: Int) -> some View {
-        HStack(spacing: digitSpacing * scale) {
+        HStack(spacing: digitSpacing * effectiveScale) {
             FlipDigitView(
                 digit: tens,
                 digitHeight: digitHeight,
@@ -115,7 +134,7 @@ struct FlipClockView: View {
     
     /// Background for the entire clock
     private var clockBackground: some View {
-        RoundedRectangle(cornerRadius: 16 * scale)
+        RoundedRectangle(cornerRadius: 16 * effectiveScale)
             .fill(
                 LinearGradient(
                     gradient: Gradient(colors: [

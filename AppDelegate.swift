@@ -248,6 +248,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     
     /// Requests notification permissions.
     private func requestNotificationPermissions() {
+        guard Bundle.main.bundleIdentifier != nil else {
+            print("Skipping notification permissions: no bundle identifier (running outside app bundle)")
+            return
+        }
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
             if let error = error {
                 print("Notification permission error: \(error)")
@@ -266,6 +270,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     ///
     /// **Validates: Requirements 5.3**
     private func showCompletionNotification() {
+        guard Bundle.main.bundleIdentifier != nil else {
+            print("Skipping notification: no bundle identifier (running outside app bundle)")
+            return
+        }
+        
         let content = UNMutableNotificationContent()
         content.title = "Flow Session Complete"
         content.body = "Great work! You completed a \(formatDuration(timerManager.selectedDuration)) focus session."

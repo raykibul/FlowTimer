@@ -95,69 +95,34 @@ struct ContentView: View {
     // MARK: - Standard Layout
     
     private var standardLayout: some View {
-        VStack(spacing: standardSpacing) {
-            Spacer()
-            
-            // Flip clock display - larger and more prominent
-            FlipClockView(
-                remainingTime: timerManager.remainingTime,
-                scale: 1.5,
-                showSeconds: true
-            )
-            .animation(.easeInOut(duration: 0.3), value: timerManager.remainingTime)
-            
-            Spacer()
-            
-            // Duration picker (only when idle)
-            if timerManager.timerState == .idle {
-                DurationPickerView(
-                    selectedDuration: Binding(
-                        get: { timerManager.selectedDuration },
-                        set: { timerManager.setDuration($0) }
-                    ),
-                    isDisabled: timerManager.timerState.isActive,
-                    onDurationSelected: { preset in
-                        preferencesManager.setLastDuration(preset.rawValue)
-                    }
+        GeometryReader { geometry in
+            VStack(spacing: standardSpacing) {
+                Spacer()
+                
+                // Flip clock display - scales to fit available width
+                FlipClockView(
+                    remainingTime: timerManager.remainingTime,
+                    scale: 1.5,
+                    showSeconds: true,
+                    maxWidth: geometry.size.width - 40
                 )
-                .transition(.opacity.combined(with: .move(edge: .top)))
-            }
-            
-            // Control buttons
-            ControlButtonsView(
-                timerState: timerManager.timerState,
-                onStart: handleStart,
-                onPause: { timerManager.pause() },
-                onResume: { timerManager.resume() },
-                onStop: handleStop,
-                onReset: { timerManager.reset() }
-            )
-            
-            // Collapsible sound controls
-            if timerManager.timerState == .idle || timerManager.timerState.isActive {
-                collapsibleSoundControls
-                    .transition(.opacity)
-            }
-        }
-        .animation(.easeInOut(duration: 0.3), value: timerManager.timerState)
-    }
-    
-    // MARK: - Compact Layout
-    
-    private var compactLayout: some View {
-        VStack(spacing: compactSpacing) {
-            // Smaller flip clock
-            FlipClockView(
-                remainingTime: timerManager.remainingTime,
-                preset: .standard,
-                showSeconds: true
-            )
-            
-            // Compact controls row
-            HStack(spacing: 20) {
-                // Duration picker (compact)
+                .animation(.easeInOut(duration: 0.3), value: timerManager.remainingTime)
+                
+                Spacer()
+                
+                // Duration picker (only when idle)
                 if timerManager.timerState == .idle {
-                    compactDurationPicker
+                    DurationPickerView(
+                        selectedDuration: Binding(
+                            get: { timerManager.selectedDuration },
+                            set: { timerManager.setDuration($0) }
+                        ),
+                        isDisabled: timerManager.timerState.isActive,
+                        onDurationSelected: { preset in
+                            preferencesManager.setLastDuration(preset.rawValue)
+                        }
+                    )
+                    .transition(.opacity.combined(with: .move(edge: .top)))
                 }
                 
                 // Control buttons
@@ -169,30 +134,73 @@ struct ContentView: View {
                     onStop: handleStop,
                     onReset: { timerManager.reset() }
                 )
+                
+                // Collapsible sound controls
+                if timerManager.timerState == .idle || timerManager.timerState.isActive {
+                    collapsibleSoundControls
+                        .transition(.opacity)
+                }
             }
-            
-            // Compact sound controls
-            HStack(spacing: 16) {
-                CompactSoundPickerView(
-                    selectedSound: $selectedSound,
-                    onSoundSelected: handleSoundSelection
+            .frame(maxWidth: .infinity)
+            .animation(.easeInOut(duration: 0.3), value: timerManager.timerState)
+        }
+    }
+    
+    // MARK: - Compact Layout
+    
+    private var compactLayout: some View {
+        GeometryReader { geometry in
+            VStack(spacing: compactSpacing) {
+                // Smaller flip clock - scales to fit
+                FlipClockView(
+                    remainingTime: timerManager.remainingTime,
+                    scale: 1.0,
+                    showSeconds: true,
+                    maxWidth: geometry.size.width - 40
                 )
                 
-                CompactVolumeView(
-                    volume: Binding(
-                        get: { audioManager.volume },
-                        set: { audioManager.setVolume($0) }
-                    ),
-                    isMuted: Binding(
-                        get: { audioManager.isMuted },
-                        set: { _ in audioManager.toggleMute() }
-                    ),
-                    onVolumeChanged: { volume in
-                        preferencesManager.setLastVolume(volume)
-                    },
-                    onMuteToggled: { audioManager.toggleMute() }
-                )
+                // Compact controls row
+                HStack(spacing: 20) {
+                    // Duration picker (compact)
+                    if timerManager.timerState == .idle {
+                        compactDurationPicker
+                    }
+                    
+                    // Control buttons
+                    ControlButtonsView(
+                        timerState: timerManager.timerState,
+                        onStart: handleStart,
+                        onPause: { timerManager.pause() },
+                        onResume: { timerManager.resume() },
+                        onStop: handleStop,
+                        onReset: { timerManager.reset() }
+                    )
+                }
+                
+                // Compact sound controls
+                HStack(spacing: 16) {
+                    CompactSoundPickerView(
+                        selectedSound: $selectedSound,
+                        onSoundSelected: handleSoundSelection
+                    )
+                    
+                    CompactVolumeView(
+                        volume: Binding(
+                            get: { audioManager.volume },
+                            set: { audioManager.setVolume($0) }
+                        ),
+                        isMuted: Binding(
+                            get: { audioManager.isMuted },
+                            set: { _ in audioManager.toggleMute() }
+                        ),
+                        onVolumeChanged: { volume in
+                            preferencesManager.setLastVolume(volume)
+                        },
+                        onMuteToggled: { audioManager.toggleMute() }
+                    )
+                }
             }
+            .frame(maxWidth: .infinity)
         }
     }
     

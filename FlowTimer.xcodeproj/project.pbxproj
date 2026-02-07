@@ -37,9 +37,9 @@
 		A1000072 /* rain.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A2000072 /* rain.mp3 */; };
 		A1000073 /* forest.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A2000073 /* forest.mp3 */; };
 		A1000074 /* coffee_shop.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A2000074 /* coffee_shop.mp3 */; };
-		A1000075 /* fireplace.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A2000075 /* fireplace.mp3 */; };
-		A1000076 /* white_noise.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A2000076 /* white_noise.mp3 */; };
-		A1000077 /* chime.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A2000077 /* chime.mp3 */; };
+		A1000078 /* elevenhz.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A2000078 /* elevenhz.mp3 */; };
+		A1000079 /* intersteller.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A2000079 /* intersteller.mp3 */; };
+		A1000080 /* meditation.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A2000080 /* meditation.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */

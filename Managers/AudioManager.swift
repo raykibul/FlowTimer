@@ -7,6 +7,7 @@
 
 import Foundation
 import AVFoundation
+import AppKit
 import Combine
 
 /// Manages audio playback for ambient sounds and completion chimes.
@@ -203,28 +204,32 @@ class AudioManager: ObservableObject {
     
     /// Plays the completion chime sound once.
     ///
-    /// The chime plays at the current volume level (unless muted).
+    /// Attempts to load a bundled chime file first. If not found, falls back
+    /// to the macOS system sound.
     /// This does not affect the currently playing ambient sound.
     func playCompletionChime() {
-        // Try to load the chime file with different extensions
+        // Try to load a bundled chime file
         var url: URL? = Bundle.main.url(forResource: AudioManager.chimeFileName, withExtension: AudioManager.audioFileExtension)
         if url == nil {
             url = Bundle.main.url(forResource: AudioManager.chimeFileName, withExtension: AudioManager.fallbackAudioFileExtension)
         }
         
-        guard let chimeURL = url else {
-            print("AudioManager: Could not find chime audio file (tried .mp3 and .wav)")
-            return
+        if let chimeURL = url {
+            do {
+                chimePlayer = try AVAudioPlayer(contentsOf: chimeURL)
+                chimePlayer?.numberOfLoops = 0 // Play once
+                chimePlayer?.volume = isMuted ? 0 : volume
+                chimePlayer?.prepareToPlay()
+                chimePlayer?.play()
+                return
+            } catch {
+                print("AudioManager: Error loading chime audio file: \(error.localizedDescription)")
+            }
         }
         
-        do {
-            chimePlayer = try AVAudioPlayer(contentsOf: chimeURL)
-            chimePlayer?.numberOfLoops = 0 // Play once
-            chimePlayer?.volume = isMuted ? 0 : volume
-            chimePlayer?.prepareToPlay()
-            chimePlayer?.play()
-        } catch {
-            print("AudioManager: Error loading chime audio file: \(error.localizedDescription)")
+        // Fallback: play macOS system sound
+        if !isMuted {
+            NSSound.beep()
         }
     }
     

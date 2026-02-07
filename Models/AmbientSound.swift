@@ -17,9 +17,6 @@ enum AmbientSound: String, CaseIterable, Identifiable, Equatable {
     /// Ocean waves sounds
     case ocean = "ocean"
     
-    /// White noise for focus
-    case whiteNoise = "white_noise"
-    
     /// Rain sounds
     case rain = "rain"
     
@@ -29,8 +26,14 @@ enum AmbientSound: String, CaseIterable, Identifiable, Equatable {
     /// Coffee shop background chatter and ambience
     case coffeeShop = "coffee_shop"
     
-    /// Crackling fireplace sounds
-    case fireplace = "fireplace"
+    /// 11 Hz binaural / focus frequency tone
+    case elevenhz = "elevenhz"
+    
+    /// Interstellar-inspired ambient soundscape
+    case intersteller = "intersteller"
+    
+    /// Guided or ambient meditation sounds
+    case meditation = "meditation"
     
     /// Unique identifier for SwiftUI lists
     var id: String { rawValue }
@@ -42,16 +45,18 @@ enum AmbientSound: String, CaseIterable, Identifiable, Equatable {
             return "Brook"
         case .ocean:
             return "Ocean Waves"
-        case .whiteNoise:
-            return "White Noise"
         case .rain:
             return "Rain"
         case .forest:
             return "Forest"
         case .coffeeShop:
             return "Coffee Shop"
-        case .fireplace:
-            return "Fireplace"
+        case .elevenhz:
+            return "11 Hz Focus"
+        case .intersteller:
+            return "Interstellar"
+        case .meditation:
+            return "Meditation"
         }
     }
     
@@ -62,16 +67,18 @@ enum AmbientSound: String, CaseIterable, Identifiable, Equatable {
             return "drop.fill"
         case .ocean:
             return "water.waves"
-        case .whiteNoise:
-            return "waveform"
         case .rain:
             return "cloud.rain.fill"
         case .forest:
             return "leaf.fill"
         case .coffeeShop:
             return "cup.and.saucer.fill"
-        case .fireplace:
-            return "flame.fill"
+        case .elevenhz:
+            return "waveform.path"
+        case .intersteller:
+            return "sparkles"
+        case .meditation:
+            return "brain.head.profile"
         }
     }
     
