@@ -75,9 +75,9 @@
 		A2000072 /* rain.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = rain.mp3; sourceTree = "<group>"; };
 		A2000073 /* forest.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = forest.mp3; sourceTree = "<group>"; };
 		A2000074 /* coffee_shop.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = coffee_shop.mp3; sourceTree = "<group>"; };
-		A2000075 /* fireplace.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = fireplace.mp3; sourceTree = "<group>"; };
-		A2000076 /* white_noise.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = white_noise.mp3; sourceTree = "<group>"; };
-		A2000077 /* chime.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = chime.mp3; sourceTree = "<group>"; };
+		A2000078 /* elevenhz.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = elevenhz.mp3; sourceTree = "<group>"; };
+		A2000079 /* intersteller.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = intersteller.mp3; sourceTree = "<group>"; };
+		A2000080 /* meditation.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = meditation.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,9 +205,9 @@
 				A2000072 /* rain.mp3 */,
 				A2000073 /* forest.mp3 */,
 				A2000074 /* coffee_shop.mp3 */,
-				A2000075 /* fireplace.mp3 */,
-				A2000076 /* white_noise.mp3 */,
-				A2000077 /* chime.mp3 */,
+				A2000078 /* elevenhz.mp3 */,
+				A2000079 /* intersteller.mp3 */,
+				A2000080 /* meditation.mp3 */,
 			);
 			path = Sounds;
 			sourceTree = "<group>";
@@ -276,9 +276,9 @@
 				A1000072 /* rain.mp3 in Resources */,
 				A1000073 /* forest.mp3 in Resources */,
 				A1000074 /* coffee_shop.mp3 in Resources */,
-				A1000075 /* fireplace.mp3 in Resources */,
-				A1000076 /* white_noise.mp3 in Resources */,
-				A1000077 /* chime.mp3 in Resources */,
+				A1000078 /* elevenhz.mp3 in Resources */,
+				A1000079 /* intersteller.mp3 in Resources */,
+				A1000080 /* meditation.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
