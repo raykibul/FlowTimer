@@ -40,7 +40,6 @@ let package = Package(
                 "Views/Controls/ControlButtonsView.swift",
                 "Views/Controls/DurationPickerView.swift",
                 "Views/Controls/SoundPickerView.swift",
-                "Views/Controls/VolumeSliderView.swift",
                 // History Views
                 "Views/History/SessionListView.swift",
                 "Views/History/StatsSummaryView.swift",

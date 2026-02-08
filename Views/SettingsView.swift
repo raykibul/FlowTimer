@@ -89,23 +89,10 @@ struct SettingsView: View {
                 }
             }
             
-            Section("Default Volume") {
-                HStack {
-                    Image(systemName: "speaker.fill")
-                        .foregroundColor(.secondary)
-                    
-                    Slider(value: Binding(
-                        get: { preferencesManager.lastVolume },
-                        set: { preferencesManager.lastVolume = $0 }
-                    ), in: 0...1)
-                    
-                    Image(systemName: "speaker.wave.3.fill")
-                        .foregroundColor(.secondary)
-                    
-                    Text("\(Int(preferencesManager.lastVolume * 100))%")
-                        .frame(width: 45, alignment: .trailing)
-                        .foregroundColor(.secondary)
-                }
+            Section {
+                Text("Volume is controlled by your system volume.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
         }
     }

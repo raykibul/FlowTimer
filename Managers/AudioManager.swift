@@ -112,7 +112,7 @@ class AudioManager: ObservableObject {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
             audioPlayer?.numberOfLoops = -1 // Loop indefinitely
-            audioPlayer?.volume = isMuted ? 0 : volume
+            audioPlayer?.volume = 1.0 // Use system volume
             audioPlayer?.prepareToPlay()
             audioPlayer?.play()
             
@@ -122,6 +122,24 @@ class AudioManager: ObservableObject {
         } catch {
             print("AudioManager: Error loading audio file: \(error.localizedDescription)")
         }
+    }
+    
+    /// Pauses the currently playing ambient sound.
+    ///
+    /// The sound can be resumed later with `resumeAmbient()`.
+    /// `currentSound` is preserved so we know what to resume.
+    func pauseAmbient() {
+        guard isPlaying else { return }
+        audioPlayer?.pause()
+        isPlaying = false
+    }
+    
+    /// Resumes the previously paused ambient sound.
+    func resumeAmbient() {
+        guard let _ = currentSound, !isPlaying else { return }
+        audioPlayer?.volume = 1.0 // Use system volume
+        audioPlayer?.play()
+        isPlaying = true
     }
     
     /// Stops the currently playing ambient sound.
@@ -218,7 +236,7 @@ class AudioManager: ObservableObject {
             do {
                 chimePlayer = try AVAudioPlayer(contentsOf: chimeURL)
                 chimePlayer?.numberOfLoops = 0 // Play once
-                chimePlayer?.volume = isMuted ? 0 : volume
+                chimePlayer?.volume = 1.0 // Use system volume
                 chimePlayer?.prepareToPlay()
                 chimePlayer?.play()
                 return

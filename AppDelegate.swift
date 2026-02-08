@@ -324,9 +324,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     private func loadPreferences() {
         // Load last used duration
         timerManager.setDuration(preferencesManager.lastDuration)
-        
-        // Load last used volume
-        audioManager.setVolume(Float(preferencesManager.lastVolume))
     }
     
     // MARK: - Helpers
