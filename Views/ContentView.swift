@@ -10,12 +10,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var appDelegate: AppDelegate
     @EnvironmentObject var timerManager: TimerManager
     @EnvironmentObject var audioManager: AudioManager
     @EnvironmentObject var preferencesManager: PreferencesManager
+    @EnvironmentObject var quoteManager: QuoteManager
 
     @State private var showHistory: Bool = false
     @State private var selectedSound: AmbientSound? = nil
+    @State private var workName: String = ""
+    @State private var treeAnimationState: TreeAnimationState = .hidden
+    @State private var shouldShowTreeAndQuote: Bool = false
+    @State private var isWithering: Bool = false
 
     // MARK: - Body
 
@@ -49,10 +55,38 @@ struct ContentView: View {
 
             Spacer()
 
+            // Tree animation (only when timer is active)
+            if shouldShowTreeAndQuote {
+                TreeGrowthView(
+                    progress: timerManager.progress,
+                    animationState: treeAnimationState,
+                    onComplete: {}
+                )
+                .transition(.opacity.combined(with: .scale))
+                .padding(.bottom, 16)
+            }
+
+            // Motivational quote (only when timer is active)
+            if shouldShowTreeAndQuote && !isWithering {
+                QuoteView(
+                    quote: quoteManager.currentQuote,
+                    isVisible: shouldShowTreeAndQuote
+                )
+                .transition(.opacity.combined(with: .move(edge: .top)))
+                .padding(.bottom, 24)
+            }
+
             // Flip clock display
             clockSection
 
             Spacer()
+
+            // Work name input (only when idle)
+            if timerManager.timerState == .idle {
+                workNameField
+                    .padding(.bottom, 16)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
 
             // Duration picker (only when idle)
             if timerManager.timerState == .idle {
@@ -86,6 +120,7 @@ struct ContentView: View {
         }
         .padding()
         .animation(.easeInOut(duration: 0.3), value: timerManager.timerState)
+        .animation(.easeInOut(duration: 0.4), value: shouldShowTreeAndQuote)
     }
 
     // MARK: - Top Bar
@@ -146,6 +181,44 @@ struct ContentView: View {
             }
             .frame(maxHeight: .infinity)
         }
+    }
+
+    // MARK: - Work Name Field
+
+    private var workNameField: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "pencil")
+                .font(.system(size: 12, weight: .medium))
+                .foregroundColor(.gray)
+            
+            TextField("What are you working on?", text: $workName)
+                .textFieldStyle(.plain)
+                .font(.system(size: 14))
+                .foregroundColor(.white)
+                .multilineTextAlignment(.center)
+            
+            if !workName.isEmpty {
+                Button {
+                    workName = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray.opacity(0.7))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .frame(maxWidth: 400)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.white.opacity(0.05))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                )
+        )
     }
 
     // MARK: - Bottom Status Bar
@@ -212,15 +285,24 @@ struct ContentView: View {
     // MARK: - Actions
 
     private func handleStart() {
+        appDelegate.setWorkName(workName)
         timerManager.start()
         if let sound = selectedSound {
             audioManager.play(sound)
         }
+        
+        withAnimation(.easeInOut(duration: 0.4)) {
+            shouldShowTreeAndQuote = true
+            treeAnimationState = .growing
+        }
+        quoteManager.startRotation()
     }
 
     private func handlePause() {
         timerManager.pause()
         audioManager.pauseAmbient()
+        treeAnimationState = .paused
+        quoteManager.pauseRotation()
     }
 
     private func handleResume() {
@@ -228,17 +310,32 @@ struct ContentView: View {
         if selectedSound != nil {
             audioManager.resumeAmbient()
         }
+        treeAnimationState = .growing
+        quoteManager.resumeRotation()
     }
 
     private func handleStop() {
-        timerManager.stop()
-        audioManager.stop()
+        isWithering = true
+        treeAnimationState = .withering
+        quoteManager.stopRotation()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            timerManager.stop()
+            audioManager.stop()
+            withAnimation(.easeInOut(duration: 0.3)) {
+                shouldShowTreeAndQuote = false
+                isWithering = false
+                treeAnimationState = .hidden
+            }
+        }
     }
 
     private func handleTimerStateChange(_ newState: TimerState) {
         if newState == .completed {
+            treeAnimationState = .completed
             audioManager.stop()
             audioManager.playCompletionChime()
+            quoteManager.stopRotation()
         }
     }
 
@@ -265,9 +362,14 @@ struct ContentView: View {
 // MARK: - Preview
 
 #Preview("Standard") {
-    ContentView()
-        .environmentObject(TimerManager())
-        .environmentObject(AudioManager())
-        .environmentObject(PreferencesManager())
+    let appDelegate = AppDelegate()
+    let quoteManager = QuoteManager()
+    
+    return ContentView()
+        .environmentObject(appDelegate)
+        .environmentObject(appDelegate.timerManager)
+        .environmentObject(appDelegate.audioManager)
+        .environmentObject(appDelegate.preferencesManager)
+        .environmentObject(quoteManager)
         .frame(width: 800, height: 600)
 }

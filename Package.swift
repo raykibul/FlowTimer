@@ -46,17 +46,22 @@ let package = Package(
                 "Views/History/HistoryView.swift",
                 // Menu Bar
                 "Views/MenuBar/MenuBarController.swift",
+                // Tree & Quote Views
+                "Views/TreeGrowthView.swift",
+                "Views/QuoteView.swift",
                 // Models
                 "Models/TimerState.swift",
                 "Models/AmbientSound.swift",
                 "Models/FlowSession.swift",
                 "Models/TimePeriod.swift",
+                "Models/MotivationalQuote.swift",
                 // Managers
                 "Managers/TimerManager.swift",
                 "Managers/AudioManager.swift",
                 "Managers/FocusManager.swift",
                 "Managers/SessionStore.swift",
-                "Managers/PreferencesManager.swift"
+                "Managers/PreferencesManager.swift",
+                "Managers/QuoteManager.swift"
             ],
             resources: [
                 .process("Resources/Sounds")

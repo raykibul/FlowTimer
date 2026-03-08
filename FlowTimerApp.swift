@@ -12,15 +12,18 @@ import SwiftUI
 struct FlowTimerApp: App {
     /// The app delegate handles lifecycle and manager coordination
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject private var quoteManager = QuoteManager()
     
     var body: some Scene {
         // Main window
         WindowGroup {
             ContentView()
+                .environmentObject(appDelegate)
                 .environmentObject(appDelegate.timerManager)
                 .environmentObject(appDelegate.audioManager)
                 .environmentObject(appDelegate.preferencesManager)
-                .environmentObject(appDelegate.sessionStore ?? createFallbackSessionStore())
+                .environmentObject(appDelegate.sessionStore)
+                .environmentObject(quoteManager)
                 .frame(minWidth: 600, minHeight: 400)
         }
         .windowStyle(.hiddenTitleBar)
@@ -103,15 +106,6 @@ struct FlowTimerApp: App {
             SettingsView()
                 .environmentObject(appDelegate.preferencesManager)
                 .environmentObject(appDelegate.audioManager)
-        }
-    }
-    
-    /// Creates a fallback in-memory session store if the main one fails.
-    private func createFallbackSessionStore() -> SessionStore {
-        do {
-            return try SessionStore.inMemory()
-        } catch {
-            fatalError("Failed to create fallback SessionStore: \(error)")
         }
     }
 }
