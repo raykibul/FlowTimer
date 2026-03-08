@@ -98,8 +98,15 @@ class AudioManager: ObservableObject {
         // Stop any currently playing sound
         stop()
         
-        // Try to load the audio file with different extensions
-        var url: URL? = Bundle.main.url(forResource: sound.rawValue, withExtension: AudioManager.audioFileExtension)
+        // Try to load the audio file from Sounds folder first
+        var url: URL? = Bundle.main.url(forResource: sound.rawValue, withExtension: AudioManager.audioFileExtension, subdirectory: "Sounds")
+        if url == nil {
+            url = Bundle.main.url(forResource: sound.rawValue, withExtension: AudioManager.fallbackAudioFileExtension, subdirectory: "Sounds")
+        }
+        // Fallback: try without subdirectory
+        if url == nil {
+            url = Bundle.main.url(forResource: sound.rawValue, withExtension: AudioManager.audioFileExtension)
+        }
         if url == nil {
             url = Bundle.main.url(forResource: sound.rawValue, withExtension: AudioManager.fallbackAudioFileExtension)
         }
