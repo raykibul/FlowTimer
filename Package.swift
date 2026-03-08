@@ -24,7 +24,11 @@ let package = Package(
                 "Resources/Assets.xcassets",
                 "FlowTimer.entitlements",
                 "Package.swift",
-                "Tests"
+                "Tests",
+                "README.md",
+                "TESTING_GUIDE.md",
+                "build_app.sh",
+                "docs"
             ],
             sources: [
                 "FlowTimerApp.swift",
