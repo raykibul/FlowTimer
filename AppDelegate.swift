@@ -35,7 +35,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     @Published var focusManager = FocusManager()
     
     /// The shared session store instance
-    var sessionStore: SessionStore?
+    @Published var sessionStore: SessionStore
     
     /// The shared preferences manager instance
     @Published var preferencesManager = PreferencesManager()
@@ -56,6 +56,25 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     /// Tracks the sound used in the current session
     private var currentSessionSound: AmbientSound?
     
+    /// The work name for the current session
+    @Published var currentWorkName: String = ""
+
+    override init() {
+        do {
+            self.sessionStore = try SessionStore()
+        } catch {
+            print("Failed to initialize persistent SessionStore: \(error)")
+
+            do {
+                self.sessionStore = try SessionStore.inMemory()
+            } catch {
+                fatalError("Failed to initialize fallback SessionStore: \(error)")
+            }
+        }
+
+        super.init()
+    }
+    
     // MARK: - App Lifecycle
     
     nonisolated func applicationDidFinishLaunching(_ notification: Notification) {
@@ -65,13 +84,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
     
     private func setupApp() async {
-        // Initialize session store
-        do {
-            sessionStore = try SessionStore()
-        } catch {
-            print("Failed to initialize SessionStore: \(error)")
-        }
-        
         // Set up menu bar
         setupMenuBar()
         
@@ -200,6 +212,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
     }
     
+    /// Sets the work name for the current/upcoming session.
+    func setWorkName(_ name: String) {
+        currentWorkName = name
+    }
+    
     /// Handles session completion.
     ///
     /// **Validates: Requirements 5.1, 5.2, 8.1**
@@ -303,19 +320,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         
         let actualDuration = timerManager.selectedDuration - timerManager.remainingTime
         
+        let workNameToSave = currentWorkName.trimmingCharacters(in: .whitespaces).isEmpty ? nil : currentWorkName.trimmingCharacters(in: .whitespaces)
+        
         let session = FlowSession(
             startDate: startDate,
             duration: timerManager.selectedDuration,
             actualDuration: actualDuration,
             completed: completed,
-            sound: currentSessionSound
+            sound: currentSessionSound,
+            workName: workNameToSave
         )
         
-        sessionStore?.saveSession(session)
+        sessionStore.saveSession(session)
         
         // Clear session tracking
         currentSessionStartDate = nil
         currentSessionSound = nil
+        currentWorkName = ""
     }
     
     // MARK: - Preferences

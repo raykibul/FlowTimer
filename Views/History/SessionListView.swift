@@ -101,10 +101,21 @@ struct SessionRowView: View {
             
             // Session details
             VStack(alignment: .leading, spacing: 4) {
-                // Date and time
-                Text(Self.dateFormatter.string(from: session.startDate))
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(.white)
+                // Work name (if available) or date
+                if let workName = session.workName, !workName.isEmpty {
+                    Text(workName)
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.white)
+                        .lineLimit(1)
+                    
+                    Text(Self.dateFormatter.string(from: session.startDate))
+                        .font(.system(size: 12))
+                        .foregroundColor(.gray)
+                } else {
+                    Text(Self.dateFormatter.string(from: session.startDate))
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.white)
+                }
                 
                 // Duration info
                 HStack(spacing: 8) {
@@ -199,21 +210,24 @@ struct SessionRowView: View {
             duration: 3600,
             actualDuration: 3600,
             completed: true,
-            sound: .rain
+            sound: .rain,
+            workName: "Writing documentation"
         ),
         FlowSession(
             startDate: Date().addingTimeInterval(-86400),
             duration: 7200,
             actualDuration: 5400,
             completed: false,
-            sound: .forest
+            sound: .forest,
+            workName: "Code review"
         ),
         FlowSession(
             startDate: Date().addingTimeInterval(-172800),
             duration: 1800,
             actualDuration: 1800,
             completed: true,
-            sound: nil
+            sound: nil,
+            workName: nil
         )
     ]
     

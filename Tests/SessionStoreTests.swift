@@ -86,6 +86,7 @@ final class SessionStoreTests: XCTestCase {
             let originalActualDuration = session.actualDuration
             let originalCompleted = session.completed
             let originalSoundUsed = session.soundUsed
+            let originalWorkName = session.workName
             
             // Save the session
             store.saveSession(session)
@@ -106,6 +107,7 @@ final class SessionStoreTests: XCTestCase {
             XCTAssertEqual(fetched.actualDuration, originalActualDuration, "Actual duration should be preserved")
             XCTAssertEqual(fetched.completed, originalCompleted, "Completion status should be preserved")
             XCTAssertEqual(fetched.soundUsed, originalSoundUsed, "Sound used should be preserved")
+            XCTAssertEqual(fetched.workName, originalWorkName, "Work name should be preserved")
         }
     }
     

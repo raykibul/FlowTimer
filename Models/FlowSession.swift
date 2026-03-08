@@ -34,6 +34,9 @@ final class FlowSession {
     /// Stored as the raw value of AmbientSound enum
     var soundUsed: String?
     
+    /// The name/description of the work being done
+    var workName: String?
+    
     /// Creates a new flow session record.
     ///
     /// - Parameters:
@@ -43,13 +46,15 @@ final class FlowSession {
     ///   - actualDuration: The actual time spent in seconds
     ///   - completed: Whether the session completed naturally
     ///   - soundUsed: The ambient sound used, if any
+    ///   - workName: The name/description of the work, if any
     init(
         id: UUID = UUID(),
         startDate: Date,
         duration: TimeInterval,
         actualDuration: TimeInterval,
         completed: Bool,
-        soundUsed: String? = nil
+        soundUsed: String? = nil,
+        workName: String? = nil
     ) {
         self.id = id
         self.startDate = startDate
@@ -57,6 +62,7 @@ final class FlowSession {
         self.actualDuration = actualDuration
         self.completed = completed
         self.soundUsed = soundUsed
+        self.workName = workName
     }
     
     /// Convenience initializer that accepts an AmbientSound enum value.
@@ -68,13 +74,15 @@ final class FlowSession {
     ///   - actualDuration: The actual time spent in seconds
     ///   - completed: Whether the session completed naturally
     ///   - sound: The ambient sound used, if any
+    ///   - workName: The name/description of the work, if any
     convenience init(
         id: UUID = UUID(),
         startDate: Date,
         duration: TimeInterval,
         actualDuration: TimeInterval,
         completed: Bool,
-        sound: AmbientSound?
+        sound: AmbientSound?,
+        workName: String? = nil
     ) {
         self.init(
             id: id,
@@ -82,7 +90,8 @@ final class FlowSession {
             duration: duration,
             actualDuration: actualDuration,
             completed: completed,
-            soundUsed: sound?.rawValue
+            soundUsed: sound?.rawValue,
+            workName: workName
         )
     }
     
